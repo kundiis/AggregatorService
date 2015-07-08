@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/aggregator1/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="aggregator1" targetNamespace="http://www.example.org/aggregator1/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/aggregator1/">
+      <xsd:element name="search">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="in" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="searchResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+          	<xsd:element name="out" type="tns:SearchTo"
+          		maxOccurs="unbounded" />
+          	<xsd:element name="otherResults" type="tns:BlogData" maxOccurs="unbounded" nillable="true"></xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    
+      <xsd:complexType name="SearchTo">
+      	<xsd:sequence>
+      		<xsd:element name="author" type="xsd:string" nillable="true"></xsd:element>
+      		<xsd:element name="time" type="xsd:string" nillable="true"></xsd:element>
+      		<xsd:element name="latittude" type="xsd:string" nillable="true"></xsd:element>
+      		<xsd:element name="longitude" type="xsd:string" nillable="true"></xsd:element>
+      		<xsd:element name="type" type="xsd:string" nillable="true"></xsd:element>
+      		<xsd:element name="image" type="xsd:base64Binary" nillable="true"></xsd:element>
+      		<xsd:element name="video" type="xsd:base64Binary" nillable="true"></xsd:element>
+      		<xsd:element name="association" type="xsd:string" nillable="true" maxOccurs="unbounded"></xsd:element>
+      		<xsd:element name="id" type="xsd:int" nillable="true"></xsd:element>
+      		<xsd:element name="blogContent" type="xsd:string" nillable="true"></xsd:element>
+      	</xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="searchAppendandPass">
+      	<xsd:complexType>
+      		<xsd:sequence>
+      			<xsd:element name="in" type="tns:SearchTo"
+      				maxOccurs="unbounded">
+      			</xsd:element>
+      			<xsd:element name="keyword" type="xsd:string"></xsd:element>
+      			<xsd:element name="counter" type="xsd:int"></xsd:element>
+      			<xsd:element name="uniqueId" type="xsd:int"></xsd:element>
+      			<xsd:element name="originID" type="xsd:int"></xsd:element>
+      			<xsd:element name="imageWS" type="xsd:boolean"></xsd:element>
+      			<xsd:element name="videoWS" type="xsd:boolean"></xsd:element>
+      			<xsd:element name="associations" type="xsd:boolean"></xsd:element>
+      			<xsd:element name="blog" type="xsd:boolean">
+      			</xsd:element>
+      			<xsd:element name="otherResults" type="tns:BlogData" maxOccurs="unbounded" nillable="true"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="searchAppendandPassResponse">
+      	<xsd:complexType>
+      		<xsd:sequence>
+      			<xsd:element name="out" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="searchGoldBox">
+      	<xsd:complexType>
+      		<xsd:sequence>
+      			<xsd:element name="in" type="xsd:string"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:element name="searchGoldBoxResponse">
+      	<xsd:complexType>
+      		<xsd:sequence>
+      			<xsd:element name="out" type="tns:SearchTo" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      <xsd:complexType name="BlogInfo">
+      	<xsd:sequence>
+      		<xsd:element name="BlogId" type="xsd:string"/>
+      		<xsd:element name="name" type="xsd:string"/>
+      		<xsd:element name="time" type="xsd:string"/>
+      		<xsd:element name="author" type="xsd:string"/>
+      		<xsd:element name="latitude" type="xsd:string"/>
+      		<xsd:element name="longitude" type="xsd:string"/>
+      		<xsd:element name="tag" type="xsd:string"/>
+      	</xsd:sequence>
+      </xsd:complexType>
+      <xsd:complexType name="BlogData">
+      	<xsd:sequence>
+      		<xsd:element name="data" type="xsd:base64Binary"/>
+      		<xsd:element name="info" type="tns:BlogInfo" nillable="true"/>
+      	</xsd:sequence>
+      </xsd:complexType>
+    </xsd:schema>
+    
+  </wsdl:types>
+  <wsdl:message name="searchRequest">
+    <wsdl:part element="tns:search" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="searchResponse">
+    <wsdl:part element="tns:searchResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="searchAppendandPassRequest">
+  	<wsdl:part name="parameters" element="tns:searchAppendandPass"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="searchAppendandPassResponse">
+  	<wsdl:part name="parameters" element="tns:searchAppendandPassResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="searchGoldBoxRequest">
+  	<wsdl:part name="parameters" element="tns:searchGoldBox"></wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="searchGoldBoxResponse">
+  	<wsdl:part name="parameters" element="tns:searchGoldBoxResponse"></wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="aggregator1">
+    <wsdl:operation name="search">
+      <wsdl:input message="tns:searchRequest"/>
+      <wsdl:output message="tns:searchResponse"/>
+    </wsdl:operation>
+    <wsdl:operation name="searchAppendandPass">
+    	<wsdl:input message="tns:searchAppendandPassRequest"></wsdl:input>
+    	<wsdl:output message="tns:searchAppendandPassResponse"></wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="searchGoldBox">
+    	<wsdl:input message="tns:searchGoldBoxRequest"></wsdl:input>
+    	<wsdl:output message="tns:searchGoldBoxResponse"></wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="aggregator1SOAP" type="tns:aggregator1">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="search">
+      <soap:operation soapAction="http://www.example.org/aggregator1/search"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="searchAppendandPass">
+      <soap:operation soapAction="http://www.example.org/aggregator1/searchAppendandPass"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="searchGoldBox">
+      <soap:operation soapAction="http://www.example.org/aggregator1/searchGoldBox"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="aggregator1">
+    <wsdl:port binding="tns:aggregator1SOAP" name="aggregator1SOAP">
+      <soap:address location="http://www.example.org/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

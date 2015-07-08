@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<project name='ws-async' default='help' basedir='.'>
+
+	<!-- ========================================= -->
+
+	<target name='help'>
+		<echo>
+			Web Service - Video Aggregator
+			
+			Requires:
+				1. Axis2 (built against v1.5.1)
+				2. Tomcat (1.6.x)
+			
+			Build Notes:
+				1. Build server and deploy before building the client as
+				   it depends on the service (.aar) for the WSDL.
+				2. Modify properties axis2.home, tomcat.home, and wsdl to 
+				   your environment.
+				3. Redeploying the service requires you to restart tomcat 
+				   (hot deploy is not enabled)
+			
+			Primary Targets:
+				1. Server: aar deploy
+				2. WSDL, compile.service, compile.wsdl, aar, deploy
+		</echo>
+	</target>
+
+	<!-- ========================================= -->
+
+	<target name='init'>
+		<property name='resources.dir' value='${basedir}/resources' />
+		<property name='build.dir' value='${basedir}/build' />
+		<property name='service.aar' value='${build.dir}/aggregator2.aar' />
+		<property name='aggregator.config' value='${resources.dir}/aggregator2.properties' />
+		<property name='wsdl' value='aggregator2.wsdl' />
+		<property name='wsdl2' value='aggregator3.wsdl' />
+
+		<!-- installation specific -->
+		<property name='axis2.home' value='C:\Axis\axis2-1.5-bin\axis2-1.5' />
+		<property name='junit.jar' value='E:\eclipse-jee-galileo-SR1-win32\eclipse\plugins\org.junit4_4.5.0.v20090824\junit.jar' />
+		<property name='tomcat.home' value='C:\apache-tomcat-6.0.26' />
+		<property name='voldemort.home' value='C:\voldemort-0.80.1\dist\voldemort-0.80.1.jar'/>
+
+		<path id='build.classpath'>
+			<pathelement location='${basedir}/classes' />
+			<pathelement location='${build.dir}/service' />
+			<pathelement location='${build.dir}/generated/classes' />
+			<pathelement location='${junit.jar}' />
+			<pathelement location='${voldemort.home}' />
+			<fileset dir='${axis2.home}/lib'>
+				<include name='**/*.jar' />
+			</fileset>
+		</path>
+	</target>
+
+	<!-- ========================================= -->
+
+	<target name='clean' depends='init'>
+		<delete dir='${build.dir}' />
+		<delete dir='${basedir}/classes' />
+		<mkdir dir='${basedir}/classes' />
+	</target>
+
+	<!-- ========================================= -->
+
+	<target name='all' depends='clean,wsdl,compile.wsdl,compile.service,aar'>
+		<echo>Deployment to tomcat is separate: ant deploy</echo>
+	</target>
+
+	<!-- ========================================= -->
+	
+	<target name='compile.service' depends='init'>
+		<mkdir dir='${build.dir}/service' />
+		<javac destdir='${build.dir}/service' srcdir='${basedir}/src' classpathref='build.classpath'>
+		</javac>
+	</target>
+
+	<!-- ========================================= -->
+	<!-- see http://ws.apache.org/axis2/tools/1_4/CodegenToolReference.html -->
+
+	<target name="wsdl" depends='init'>
+		<delete dir='${build.dir}/generated' />
+		<mkdir dir='${build.dir}/generated' />
+		<mkdir dir='${build.dir}/generated/classes' />
+		<!--<copy todir='${build.dir}/generated/classes' file='${basedir}/resources/log4j.properties' />-->
+		<java classname="org.apache.axis2.wsdl.WSDL2Java">
+			<arg value="-uri" />
+			<arg value="${wsdl}" />
+			<arg value="-ss" />
+			<arg value="-ssi" />
+			<arg value="-g" />
+			<arg value="-s" />
+			<arg value="-t" />
+			<arg value="-sd" />
+			<arg value="-p" />
+			<arg value="ws.async" />
+			<arg value="-o" />
+			<arg value="${build.dir}/generated" />
+			<arg value="-f" />
+			<classpath refid="build.classpath" />
+		</java>
+		<java classname="org.apache.axis2.wsdl.WSDL2Java">
+			<arg value="-uri" />
+			<arg value="${wsdl2}" />
+			<arg value="-s" />
+			<arg value="-t" />
+			<arg value="-p" />
+			<arg value="ws.async" />
+			<arg value="-o" />
+			<arg value="${build.dir}/generated" />
+			<arg value="-f" />
+			<classpath refid="build.classpath" />
+		</java>
+	</target>
+
+	<!-- ========================================= -->
+
+	<target name='compile.wsdl' depends='init'>
+		<mkdir dir='${build.dir}/generated/classes' />
+		<javac destdir='${build.dir}/generated/classes' srcdir='${build.dir}/generated' classpathref='build.classpath'>
+		</javac>
+	</target>
+
+	<target name='compile.demo' depends='init'>
+		<javac debug='on' fork='true' destdir='${basedir}/classes' srcdir='${basedir}/src' classpathref='build.classpath'>
+		</javac>
+	</target>
+
+	<!-- ========================================= -->
+
+	<target name='aar' depends='compile.wsdl'>
+
+		<!--
+		<copy todir='${build.dir}/service'>
+			<fileset dir='${basedir}/resources'>
+				<include name='**/*' />
+			</fileset>
+		</copy>
+		-->
+
+		<!-- generated classes from wsdl2java -->
+		<copy todir='${build.dir}/service'>
+			<fileset dir='${build.dir}/generated/classes'>
+				<include name='**/*' />
+			</fileset>
+		</copy>
+
+		<!-- our server implementation -->
+		<copy todir='${build.dir}/service'>
+			<fileset dir='${basedir}/classes'>
+				<include name='**/*' />
+			</fileset>
+		</copy>
+
+		<mkdir dir='${build.dir}/service/META-INF' />
+		<copy todir='${build.dir}/service/META-INF' file='${build.dir}/generated/services.xml' />
+		<copy todir='${build.dir}/service/META-INF' file='${build.dir}/generated/aggregator2.wsdl' />
+
+		<!-- override the services.xml with the correct implementation of the service -->
+		<replace file="${build.dir}/service/META-INF/services.xml" token="Aggregator2Skeleton" value="Aggregator2Implementation" />
+
+		<jar compress='false' filesonly='true' destfile='${service.aar}'>
+			<fileset dir='${build.dir}/service'>
+				<include name='**/*' />
+			</fileset>
+		</jar>
+	</target>
+
+	<!-- ========================================= -->
+
+	<target name='deploy' depends='aar'>
+		<copy todir='${tomcat.home}/webapps/axis2/WEB-INF/services' file='${service.aar}' />
+		<copy todir='${tomcat.home}/webapps/axis2/WEB-INF/classes' file='${aggregator.config}' />
+	</target>
+
+
+	<!-- ========================================= -->
+
+	<target name='demo' depends='compile.demo'>
+		<java fork='yes' maxmemory='512m' classname='ws.async.client.RequestClient'>
+			<classpath refid='build.classpath' />
+		</java>
+	</target>
+
+</project>

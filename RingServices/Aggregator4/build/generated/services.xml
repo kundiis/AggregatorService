@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This file was auto-generated from WSDL -->
+<!-- by the Apache Axis2 version: 1.5  Built on : Apr 30, 2009 (06:07:24 EDT) -->
+<serviceGroup>
+    <service name="aggregator4">
+        <messageReceivers>
+            <messageReceiver mep="http://www.w3.org/ns/wsdl/in-out" class="ws.async.Aggregator4MessageReceiverInOut"/>
+        </messageReceivers>
+        <parameter name="ServiceClass">ws.async.Aggregator4Skeleton</parameter>
+        <parameter name="useOriginalwsdl">true</parameter>
+        <parameter name="modifyUserWSDLPortAddress">true</parameter>
+        <operation name="searchGoldBox" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.example.org/aggregator4/">
+            <actionMapping>http://www.example.org/aggregator4/searchGoldBox</actionMapping>
+            <outputActionMapping>http://www.example.org/aggregator4/aggregator4/searchGoldBoxResponse</outputActionMapping>
+        </operation>
+        <operation name="search" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.example.org/aggregator4/">
+            <actionMapping>http://www.example.org/aggregator4/search</actionMapping>
+            <outputActionMapping>http://www.example.org/aggregator4/aggregator4/searchResponse</outputActionMapping>
+        </operation>
+        <operation name="searchAppendandPass" mep="http://www.w3.org/ns/wsdl/in-out" namespace="http://www.example.org/aggregator4/">
+            <actionMapping>http://www.example.org/aggregator4/searchAppendandPass</actionMapping>
+            <outputActionMapping>http://www.example.org/aggregator4/aggregator4/searchAppendandPassResponse</outputActionMapping>
+        </operation>
+    </service>
+</serviceGroup>

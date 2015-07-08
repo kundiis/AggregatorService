@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="MTOMBlogtransfer" targetNamespace="http://www.example.org/MTOMBlogtransfer/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://www.example.org/MTOMBlogtransfer/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/MTOMBlogtransfer/">
+      <xsd:element name="UploadBlog">
+        <xsd:complexType>
+          <xsd:sequence>
+          	<xsd:element name="author" type="xsd:string"/>
+          	<xsd:element name="time" type="xsd:string"/>
+          	<xsd:element name="BlogName" type="xsd:string"/>
+          	<xsd:element name="data" type="xsd:base64Binary"/>
+          	<xsd:element name="latitude" type="xsd:string"/>
+          	<xsd:element name="longitude" type="xsd:string"/>
+          	<xsd:element name="tag" type="xsd:string"/>
+          	<xsd:element name="type" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="UploadBlogResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="BlogId" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>   
+     
+      <xsd:complexType name="BlogInfo">
+      	<xsd:sequence>
+      		<xsd:element name="BlogId" type="xsd:string"/>
+      		<xsd:element name="name" type="xsd:string"/>
+      		<xsd:element name="time" type="xsd:string"/>
+      		<xsd:element name="author" type="xsd:string"/>
+      		<xsd:element name="latitude" type="xsd:string"/>
+      		<xsd:element name="longitude" type="xsd:string"/>
+      		<xsd:element name="tag" type="xsd:string"/>
+      	</xsd:sequence>
+      </xsd:complexType>
+      <xsd:element name="DownloadBlogResponse">
+      	<xsd:complexType>
+      		<xsd:sequence>
+      			<xsd:element maxOccurs="unbounded" minOccurs="0" name="data" type="tns:BlogData"/>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      
+      <xsd:element name="DownloadBlogRequest">
+      	<xsd:complexType>
+      		<xsd:sequence>
+      			<xsd:element name="searchType" type="xsd:string"/>
+      			<xsd:element name="value" type="xsd:string"/>
+      		</xsd:sequence>
+      	</xsd:complexType>
+      </xsd:element>
+      
+        
+          
+      <xsd:complexType name="BlogData">
+      	<xsd:sequence>
+      		<xsd:element name="data" type="xsd:base64Binary"/>
+      		<xsd:element name="info" type="tns:BlogInfo"/>
+      	</xsd:sequence>
+      </xsd:complexType>
+      
+    </xsd:schema>
+  </wsdl:types>
+  
+  <wsdl:message name="DownloadBlogResponse">
+    <wsdl:part name="parameters" element="tns:DownloadBlogResponse">
+    </wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="DownloadBlogRequest">
+    <wsdl:part name="parameters" element="tns:DownloadBlogRequest">
+    </wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="UploadBlogRequest">
+    <wsdl:part name="parameters" element="tns:UploadBlog">
+    </wsdl:part>
+  </wsdl:message>
+  
+  <wsdl:message name="UploadBlogResponse">
+    <wsdl:part name="parameters" element="tns:UploadBlogResponse">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="MTOMBlogTransfer">
+    <wsdl:operation name="UploadBlog">
+      <wsdl:input message="tns:UploadBlogRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:UploadBlogResponse">
+    </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadBlog">
+      <wsdl:input message="tns:DownloadBlogRequest">
+    </wsdl:input>
+      <wsdl:output message="tns:DownloadBlogResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="MTOMBlogTransferSOAP" type="tns:MTOMBlogTransfer">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="UploadBlog">
+      <soap:operation soapAction="http://www.example.org/MTOMBlogtransfer/UploadBlog"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DownloadBlog">
+      <soap:operation soapAction="http://www.example.org/MTOMBlogtransfer/DownloadBlog"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="MTOMBlogTransfer">
+    <wsdl:port name="MTOMBlogTransferSOAP" binding="tns:MTOMBlogTransferSOAP">
+      <soap:address location="http://www.example.org/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
